@@ -3,18 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import { pointInRect, convToPoint } from '../util';
 import Rect from './Rect';
 import $ from 'jquery';
-import imgHere from '../static/here.png';
-function func1() {
-    $('.abcde').css({ left: '300px' });
-    $('.abcde').fadeOut(1000);
-}
-function func2({ x: px, y: py }) {
-    $('.abcde').css({ left: px, top: py, width: '40px', height: '40px' });
-    $('.abcde').fadeIn(10);
-    setTimeout(() => {
-        $('.abcde').fadeOut(600);
-    }, 400);
-}
+// function func1() {
+//     $('.abcde').css({ left: '300px' });
+//     $('.abcde').fadeOut(1000);
+// }
+// function func2({ x: px, y: py }) {
+//     $('.abcde').css({ left: px, top: py, width: '40px', height: '40px' });
+//     $('.abcde').fadeIn(10);
+//     setTimeout(() => {
+//         $('.abcde').fadeOut(600);
+//     }, 400);
+// }
 export default function FullCard({ src, desc, map, page }) {
     const navigate = useNavigate();
     console.log(map);
