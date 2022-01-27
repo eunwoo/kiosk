@@ -34,7 +34,7 @@ export default function FullCard({ src, desc, map, page }) {
                         } else {
                             navigate(x.to);
                         }
-                        func2({ x: e.pageX, y: e.pageY });
+                        // func2({ x: e.pageX, y: e.pageY });
                     }
                 });
             }
@@ -47,10 +47,10 @@ export default function FullCard({ src, desc, map, page }) {
             console.log('화면에서 사라짐');
         };
     });
-    const clickFunc = () => {
-        // $('.abcde').fadeOut(1000);
-        func1();
-    };
+    // const clickFunc = () => {
+    //     // $('.abcde').fadeOut(1000);
+    //     func1();
+    // };
     return (
         <div>
             <img
