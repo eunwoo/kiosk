@@ -86,6 +86,18 @@ const MyVideo1 = forwardRef((props, ref1) => {
       }, 2000);
     }
   };
+  const handlePlay = () => {
+    console.log('handlePlay');
+  };
+  const handlePause = () => {
+    console.log('handlePause');
+  };
+  const handleEnded = () => {
+    console.log('handleEnded');
+  };
+  const handleLoadedmetadata = () => {
+      console.log('handleMetadata');
+  }
 
   return (
     <div>
@@ -95,6 +107,10 @@ const MyVideo1 = forwardRef((props, ref1) => {
         ref={ref}
         playsInline={true}
         onClick={handleControlVisible}
+        onPlay={handlePlay}
+        onPause={handlePause}
+        onEnded={handleEnded}
+        onLoadedMetadata={handleLoadedmetadata}
         style={{width: "100%"}}
       >
         <source src={videoSrc} type="video/mp4" />

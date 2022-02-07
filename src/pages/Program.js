@@ -1,8 +1,10 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import FullCard from '../components/FullCard';
 import map from '../kioskmap';
+import { useEffect } from 'react'
 
 export default function Program() {
+    const navigate = useNavigate();
     const location = useLocation();
     console.log(location);
     const path = location.pathname.split('/');
@@ -19,6 +21,13 @@ export default function Program() {
     imgSrc = require('../static/' + page + '.jpg');
 
     console.log(page);
+    useEffect(() => {
+        console.log('Program - useEffect');
+        const timer = setTimeout(()=>{
+            navigate('/');
+        }, 10000);
+        return () => clearTimeout(timer);
+    })
     return (
         <div>
             {console.log('Program')}

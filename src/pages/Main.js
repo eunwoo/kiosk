@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import FullCard from '../components/FullCard';
 import img from '../static/Main.jpg';
 import img1 from '../static/Main1.mp4';
@@ -6,12 +6,14 @@ import map from '../kioskmap';
 import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
 import Slider from "react-slick"
+import {useNavigate} from 'react-router-dom'
 import { useState, useRef, useEffect } from 'react'
 import { Replay } from 'vimond-replay'
 import MyVideo from "../components/MyVideo"
 import MyVideo1 from "../components/MyVideo1"
 
 export default function Main() {
+    const navigate = useNavigate();
     const [autoplaySpeed, setAutoplaySpeed] = useState(1000);
     const [videoPaused, setVideoPaused] = useState(false);
     const videoRef = useRef(null);
@@ -50,6 +52,10 @@ export default function Main() {
         const observedVideoElement = videoRef && videoRef.current;
         observedVideoElement.pause();
     }
+    const handlerClick = () => {
+        console.log('handlerClick');
+        navigate('Program');
+    }
     useEffect(() => {
         addTimeUpdate();
         console.log('useEffect');
@@ -61,6 +67,8 @@ export default function Main() {
         //     <FullCard src={img} map={map} page="Main" />
         //     {console.log('Main')}
         // </div>
+        <div>
+
         <Slider {...settings} >
             <div>
                 <img src={img}></img>
@@ -78,9 +86,8 @@ export default function Main() {
                 {/* <MyVideo src={img1} ref={videoRef}/> */}
                 <MyVideo1 src={img1} ref={videoRef} />
             </div>
-            <div>
-                <img src={img}></img>
-            </div>
         </Slider>
+        <div style={{position:"absolute", left:"0", top:"0", width:"100%", height:"100%" }} onClick={handlerClick}></div>
+        </div>
     );
 }
