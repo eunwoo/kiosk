@@ -8,6 +8,10 @@ import {useNavigate} from 'react-router-dom'
 import { useState, useRef, useEffect } from 'react'
 import MyVideo1 from "../components/MyVideo1"
 import axios from 'axios';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay } from 'swiper';
+import 'swiper/css';
+
 const host = "http://localhost";
 const port = 3001;
 
@@ -98,7 +102,15 @@ export default function Main() {
         // </div>
         <div style={{width:"calc(100vw-100%)"}}>
 
-        <Slider {...settings} style={{width:"95%"}}>
+        {/* <Slider {...settings} style={{width:"95%"}}> */}
+        <Swiper 
+            onSwiper={(swiper) => console.log(swiper)}
+            autoplay={{
+                delay: 2000,
+                disableOnInteraction: false,
+            }}
+            modules={[Autoplay]}
+        >
             {
                 pages.length && pages.map((page) => {
                     console.log(page);
@@ -106,25 +118,26 @@ export default function Main() {
                     console.log(isMovie[1]);
                     if(isMovie[1] === 'mp4') {
                         return (
-                            <div>
+                            <SwiperSlide>
                                 <MyVideo1 src={require(`../static/home/${page}`)} ref={videoRef} setDuration={setDuration} />
                                 {
                                     // videoRef.current.play()
                                 }
-                            </div>
+                            </SwiperSlide>
                         )
                     }
                     else {
                         return (
-                            <div>
+                            <SwiperSlide>
                                 <img src={require(`../static/home/${page}`)}></img>
-                            </div>
+                            </SwiperSlide>
                         )
                     }
                 })
             }
                 {/* <MyVideo1 src={img1} ref={videoRef} /> */}
-        </Slider>
+        {/* </Slider> */}
+        </Swiper>
         <div style={{position:"absolute", left:"0", top:"0", width:"100%", height:"100%" }} onClick={handlerClick}></div>
         </div>
     );
