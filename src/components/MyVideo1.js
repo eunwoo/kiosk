@@ -5,18 +5,18 @@ const MyVideo1 = forwardRef((props, ref1) => {
     const [nowPlaying, setNowPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [showControl, setShowControl] = useState(false);
+    const ref = useRef(null);
 
     useImperativeHandle(ref1, () => ({
 
         getAlert() {
             console.log('getAlert');
         },
-        async play() {
+        play() {
             // console.log('play');
-            await videoElement.play();
-            const observedVideoElement = ref && ref.current;
-            if (observedVideoElement) {
-                observedVideoElement.currentTime = 0;
+            if (videoElement) {
+              videoElement.currentTime = 0;
+              videoElement.play();
             }
         },
         pause() {
@@ -25,7 +25,6 @@ const MyVideo1 = forwardRef((props, ref1) => {
 
     }));  
 
-  const ref = useRef(null);
 
   const totalTime = (ref && ref.current && ref.current.duration) || 0;
   const videoElement = ref && ref.current;
@@ -89,14 +88,22 @@ const MyVideo1 = forwardRef((props, ref1) => {
   const handlePlay = () => {
     console.log('handlePlay');
   };
+  const handlePlaying = () => {
+    console.log('handlePlaying');
+  };
   const handlePause = () => {
     console.log('handlePause');
+    videoElement.pause();
   };
   const handleEnded = () => {
     console.log('handleEnded');
+    videoElement.pause();
   };
   const handleLoadedmetadata = () => {
       console.log('handleMetadata');
+      console.log(videoElement.duration);
+      props.setDuration(videoElement.duration);
+      // console.log(props);
   }
 
   return (
@@ -108,6 +115,7 @@ const MyVideo1 = forwardRef((props, ref1) => {
         playsInline={true}
         onClick={handleControlVisible}
         onPlay={handlePlay}
+        onPlaying={handlePlaying}
         onPause={handlePause}
         onEnded={handleEnded}
         onLoadedMetadata={handleLoadedmetadata}
@@ -129,4 +137,4 @@ const MyVideo1 = forwardRef((props, ref1) => {
   );
 });
 
-export default memo(MyVideo1);
+export default MyVideo1;

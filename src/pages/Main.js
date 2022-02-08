@@ -8,35 +8,51 @@ import "slick-carousel/slick/slick-theme.css"
 import Slider from "react-slick"
 import {useNavigate} from 'react-router-dom'
 import { useState, useRef, useEffect } from 'react'
-import { Replay } from 'vimond-replay'
-import MyVideo from "../components/MyVideo"
 import MyVideo1 from "../components/MyVideo1"
+import axios from 'axios';
+const host = "http://localhost";
+const port = 3001;
 
 export default function Main() {
     const navigate = useNavigate();
     const [autoplaySpeed, setAutoplaySpeed] = useState(1000);
     const [videoPaused, setVideoPaused] = useState(false);
     const videoRef = useRef(null);
-
+    const [pages, setPages] = useState([]);
+    const [videoDuration, setVideoDuration] = useState(1000);
     const settings = {
         dots: true,
         infinite: true,
-        speed: 500,
+        speed: 1000,
         slidesToShow: 1,
         slidesToScroll: 1,
         autoplay: true,
         autoplaySpeed: autoplaySpeed,
         beforeChange: (current, next) => {
-            console.log('beforeChange');
-            if(current === 0 && next === 1) { // image to video
-                console.log('1');
-                setAutoplaySpeed(10000);
-                replayVideo();
+            console.log('beforeChange: current='+ current);
+            if(pages.length) {
+                console.log(pages);
+                if(current >= 0) {
+                    if(pages[next].split('.')[1] === "mp4") {
+                        // setAutoplaySpeed(10000);
+                        setAutoplaySpeed(videoDuration);
+                        console.log('videoDuration='+videoDuration);
+                        replayVideo();
+                    }
+                    else {
+                        setAutoplaySpeed(1000);
+                    }
+                }
             }
-            else {
-                setAutoplaySpeed(3000);
-                pauseVideo();
-            }
+            // if(current === 0 && next === 1) { // image to video
+            //     console.log('1');
+            //     setAutoplaySpeed(10000);
+            //     replayVideo();
+            // }
+            // else {
+            //     setAutoplaySpeed(3000);
+            //     pauseVideo();
+            // }
         }
     }
 
@@ -56,12 +72,26 @@ export default function Main() {
         console.log('handlerClick');
         navigate('Program');
     }
+    const getPages = async () => {
+        console.log('getPages');
+        console.log(`${host}:${port}`);
+        const response = await axios.get('http://localhost:3001');
+        console.log('this')
+        console.log(response.data);
+        setPages(response.data);
+    }
     useEffect(() => {
         addTimeUpdate();
+        getPages();
+        setAutoplaySpeed(1000);
         console.log('useEffect');
         console.log(videoRef);
-    }, [videoRef])
-
+    }, [videoRef, videoDuration])
+    const setDuration = (duration) => {
+        console.log(duration);
+        setVideoDuration(parseInt(duration*1000));
+        console.log('setDuration='+videoDuration);
+    }
     return (
         // <div>
         //     <FullCard src={img} map={map} page="Main" />
@@ -70,22 +100,31 @@ export default function Main() {
         <div>
 
         <Slider {...settings} >
-            <div>
-                <img src={img}></img>
-            </div>
-            <div>
-                {/* <Replay 
-                    options={{controls:{includeControls: [],}}} 
-                    source={img1} 
-                    initialPlaybackProps={{ isPaused: true }}
-                    onPlaybackActionsReady={playbackActionsReady} /> */}
-
-                    {/* <video ref={videoRef} style={{width: "100%"}} muted>
-                        <source src={img1}></source>
-                    </video> */}
-                {/* <MyVideo src={img1} ref={videoRef}/> */}
-                <MyVideo1 src={img1} ref={videoRef} />
-            </div>
+            {
+                pages.length && pages.map((page) => {
+                    console.log(page);
+                    let isMovie = page.split('.');
+                    console.log(isMovie[1]);
+                    if(isMovie[1] === 'mp4') {
+                        return (
+                            <div>
+                                <MyVideo1 src={require(`../static/Home/${page}`)} ref={videoRef} setDuration={setDuration} />
+                                {
+                                    // videoRef.current.play()
+                                }
+                            </div>
+                        )
+                    }
+                    else {
+                        return (
+                            <div>
+                                <img src={require(`../static/Home/${page}`)}></img>
+                            </div>
+                        )
+                    }
+                })
+            }
+                {/* <MyVideo1 src={img1} ref={videoRef} /> */}
         </Slider>
         <div style={{position:"absolute", left:"0", top:"0", width:"100%", height:"100%" }} onClick={handlerClick}></div>
         </div>

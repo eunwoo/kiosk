@@ -25,7 +25,7 @@ export default function Program() {
         console.log('Program - useEffect');
         const timer = setTimeout(()=>{
             navigate('/');
-        }, 10000);
+        }, 120000);
         return () => clearTimeout(timer);
     })
     return (
