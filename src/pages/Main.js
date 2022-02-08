@@ -1,7 +1,5 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import FullCard from '../components/FullCard';
-import img from '../static/Main.jpg';
-import img1 from '../static/Main1.mp4';
 import map from '../kioskmap';
 import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
@@ -41,6 +39,7 @@ export default function Main() {
                     }
                     else {
                         setAutoplaySpeed(1000);
+                        pauseVideo();
                     }
                 }
             }
@@ -89,7 +88,7 @@ export default function Main() {
     }, [videoRef, videoDuration])
     const setDuration = (duration) => {
         console.log(duration);
-        setVideoDuration(parseInt(duration*1000));
+        setVideoDuration(parseInt(duration*1000*1.1));
         console.log('setDuration='+videoDuration);
     }
     return (
@@ -97,9 +96,9 @@ export default function Main() {
         //     <FullCard src={img} map={map} page="Main" />
         //     {console.log('Main')}
         // </div>
-        <div>
+        <div style={{width:"calc(100vw-100%)"}}>
 
-        <Slider {...settings} >
+        <Slider {...settings} style={{width:"95%"}}>
             {
                 pages.length && pages.map((page) => {
                     console.log(page);
@@ -108,7 +107,7 @@ export default function Main() {
                     if(isMovie[1] === 'mp4') {
                         return (
                             <div>
-                                <MyVideo1 src={require(`../static/Home/${page}`)} ref={videoRef} setDuration={setDuration} />
+                                <MyVideo1 src={require(`../static/home/${page}`)} ref={videoRef} setDuration={setDuration} />
                                 {
                                     // videoRef.current.play()
                                 }
@@ -118,7 +117,7 @@ export default function Main() {
                     else {
                         return (
                             <div>
-                                <img src={require(`../static/Home/${page}`)}></img>
+                                <img src={require(`../static/home/${page}`)}></img>
                             </div>
                         )
                     }

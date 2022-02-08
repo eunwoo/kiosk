@@ -13,14 +13,18 @@ const MyVideo1 = forwardRef((props, ref1) => {
             console.log('getAlert');
         },
         play() {
-            // console.log('play');
+            
             if (videoElement) {
               videoElement.currentTime = 0;
+              console.log('load and play');
+              videoElement.load();
               videoElement.play();
+              setNowPlaying(true);
             }
         },
         pause() {
             videoElement.pause();
+            setNowPlaying(false);
         },
 
     }));  
@@ -48,7 +52,7 @@ const MyVideo1 = forwardRef((props, ref1) => {
   useEffect(() => {
     addTimeUpdate();
     console.log('MyVideo1 useEffect');
-  }, []);
+  }, [nowPlaying]);
 
   // progress 이동시켰을때 실행되는 함수
   const onProgressChange = (percent) => {
