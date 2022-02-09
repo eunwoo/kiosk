@@ -8,9 +8,11 @@ import {useNavigate} from 'react-router-dom'
 import { useState, useRef, useEffect } from 'react'
 import MyVideo1 from "../components/MyVideo1"
 import axios from 'axios';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay } from 'swiper';
+import { Swiper, SwiperSlide, useSwiper } from 'swiper/react';
+import { Autoplay, EffectCube, EffectFade } from 'swiper';
 import 'swiper/css';
+// import 'swiper/css/effect-cube'
+import 'swiper/css/effect-fade'
 
 const host = "http://localhost";
 const port = 3001;
@@ -22,6 +24,11 @@ export default function Main() {
     const videoRef = useRef(null);
     const [pages, setPages] = useState([]);
     const [videoDuration, setVideoDuration] = useState(1000);
+    const [duration, setDuration] = useState(1000);
+    const swiperRef = useRef(null);
+    const swiper = useSwiper();
+    let swiperObj = null;
+
     const settings = {
         dots: true,
         infinite: true,
@@ -86,14 +93,20 @@ export default function Main() {
     useEffect(() => {
         addTimeUpdate();
         getPages();
-        setAutoplaySpeed(1000);
+        // setAutoplaySpeed(1000);
         console.log('useEffect');
         console.log(videoRef);
     }, [videoRef, videoDuration])
-    const setDuration = (duration) => {
+    const setDurationHook = (duration) => {
         console.log(duration);
         setVideoDuration(parseInt(duration*1000*1.1));
-        console.log('setDuration='+videoDuration);
+        if(swiperRef) {
+            console.log(swiperRef);
+            console.log(swiperRef.current.swiper.autoplay.delay);
+            swiperRef.current.swiper.autoplay.delay = videoDuration;
+            console.log(swiperRef.current.swiper.autoplay.delay);
+            console.log('setDuration='+videoDuration);
+        }
     }
     return (
         // <div>
@@ -104,12 +117,64 @@ export default function Main() {
 
         {/* <Slider {...settings} style={{width:"95%"}}> */}
         <Swiper 
-            onSwiper={(swiper) => console.log(swiper)}
-            autoplay={{
-                delay: 2000,
-                disableOnInteraction: false,
+            ref={swiperRef}
+            effect="fade"
+            onSwiper={(swiper) => {
+                    console.log(swiper);
+                    swiperObj = swiper;
+                    console.log(swiperObj);
+                }
+            }
+            onBeforeTransitionStart={(swiper, speed, internal) => {
+                console.log('onBeforeTransitionStart');
+                console.log(swiper);
+                console.log(speed);
+                console.log(internal);
+                if(swiper) {
+                    console.log(swiper);
+                    console.log(swiper.activeIndex);
+                    if(pages[swiper.activeIndex].split('.')[1] === "mp4") {
+                        // setAutoplaySpeed(10000);
+                        setAutoplaySpeed(videoDuration);
+                        console.log('videoDuration='+videoDuration);
+                        swiper.autoplay.delay = videoDuration;
+                        setDuration(videoDuration);
+                        replayVideo();
+                    }
+                    else {
+                        setAutoplaySpeed(1000);
+                        setDuration(1000);
+                        swiper.autoplay.delay = 1000;
+                        pauseVideo();
+                    }
+                }                
             }}
-            modules={[Autoplay]}
+            onSlideChange={(swiper) => {
+                console.log('onSlideChange');
+                // console.log(swiperRef.current.activeIndex);
+                // if(swiper) {
+                //     console.log(swiper);
+                //     console.log(swiper.activeIndex);
+                //     if(pages[swiper.activeIndex].split('.')[1] === "mp4") {
+                //         // setAutoplaySpeed(10000);
+                //         // setAutoplaySpeed(videoDuration);
+                //         console.log('videoDuration='+videoDuration);
+                //         swiper.autoplay.delay = videoDuration;
+                //         replayVideo();
+                //     }
+                //     else {
+                //         // setAutoplaySpeed(1000);
+                //         swiper.autoplay.delay = 1000;
+                //         pauseVideo();
+                //     }
+                // }
+                
+            }}
+            autoplay={{
+                delay: duration,
+                disableOnInteraction: true,
+            }}
+            modules={[Autoplay, EffectFade]}
         >
             {
                 pages.length && pages.map((page) => {
@@ -118,17 +183,17 @@ export default function Main() {
                     console.log(isMovie[1]);
                     if(isMovie[1] === 'mp4') {
                         return (
-                            <SwiperSlide>
-                                <MyVideo1 src={require(`../static/home/${page}`)} ref={videoRef} setDuration={setDuration} />
-                                {
-                                    // videoRef.current.play()
-                                }
+                            <SwiperSlide autoPlay={{delay:"10000"}}>
+                                <MyVideo1 src={require(`../static/home/${page}`)} ref={videoRef} setDuration={setDurationHook} />
+                                {/* {({ isActive }) => (
+                                    <div>Current slide is {isActive ? 'active' : 'not active'}</div>
+                                )} */}
                             </SwiperSlide>
                         )
                     }
                     else {
                         return (
-                            <SwiperSlide>
+                            <SwiperSlide autoPlay={{delay:"10000"}}>
                                 <img src={require(`../static/home/${page}`)}></img>
                             </SwiperSlide>
                         )
