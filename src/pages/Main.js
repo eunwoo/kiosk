@@ -48,7 +48,8 @@ export default function Main() {
         console.log(_duration);
         console.log(filename);
         console.log(_ref);
-        dictVideo.current[`${filename.split('/')[3].split('.')[0]}`]={ref:_ref, duration:_duration};
+        // dictVideo.current[`${filename.split('/')[3].split('.')[0]}`]={ref:_ref, duration:_duration};
+        dictVideo.current[`${filename.split('/')[2].split('.')[0]}`]={ref:_ref, duration:_duration};
         console.log(dictVideo.current);
     }
     return (
@@ -65,6 +66,8 @@ export default function Main() {
             onBeforeTransitionStart={(swiper, speed, internal) => {
                 console.log('onBeforeTransitionStart');
                 if(swiper) {
+                    console.log(swiper.activeIndex);
+                    console.log(pages);
                     if(pages[swiper.activeIndex].split('.')[1] === "mp4") {
                         let filename = pages[swiper.activeIndex].split('.')[0];
                         console.log('filename='+filename);
@@ -77,6 +80,7 @@ export default function Main() {
                         videoRefCurrent.ref.current.play();
                     }
                     else {
+                        console.log('set duration for image='+homeImageDisplayTime);
                         setDuration(homeImageDisplayTime);
                         videoRef.current.pause();
                     }
@@ -102,16 +106,20 @@ export default function Main() {
                 pages.length && pages.map((page, index) => {
                     let isMovie = page.split('.');
                     if(isMovie[1] === 'mp4') {
+                        let myVideo = `/home/${page}`;
                         return (
                             <SwiperSlide key={index}>
-                                <MyVideo1 src={require(`../static/home/${page}`)} ref={videoRef} getVideoInfoHook={getVideoInfoHook} />
+                                {/* <MyVideo1 src={require(`../static/home/${page}`)} ref={videoRef} getVideoInfoHook={getVideoInfoHook} /> */}
+                                <MyVideo1 src={myVideo} ref={videoRef} getVideoInfoHook={getVideoInfoHook} />
                             </SwiperSlide>
                         )
                     }
                     else {
+                        let myImage = `/home/${page}`;
                         return (
                             <SwiperSlide key={index}>
-                                <img src={require(`../static/home/${page}`)} alt={page} ></img>
+                                {/* <img src={require(`../static/home/${page}`)} alt={page} ></img> */}
+                                <img src={myImage} alt={page} ></img>
                             </SwiperSlide>
                         )
                     }

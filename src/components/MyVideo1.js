@@ -116,7 +116,7 @@ const MyVideo1 = forwardRef((props, ref1) => {
     <div>
       <video
         loop={false}
-        muted={true}
+        muted={false}
         ref={ref}
         playsInline={true}
         onClick={handleControlVisible}
