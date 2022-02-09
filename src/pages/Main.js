@@ -138,7 +138,7 @@ export default function Main() {
                 {/* <MyVideo1 src={img1} ref={videoRef} /> */}
         {/* </Slider> */}
         </Swiper>
-        <div style={{position:"absolute", left:"0", top:"0", width:"100%", height:"100%" }} onClick={handlerClick}></div>
+        <div style={{position:"absolute", left:"0", top:"0", width:"100%", height:"100%", zIndex:"100" }} onClick={handlerClick}></div>
         </div>
     );
 }
