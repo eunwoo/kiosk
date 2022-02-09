@@ -17,7 +17,7 @@ const MyVideo1 = forwardRef((props, ref1) => {
             if (videoElement) {
               videoElement.currentTime = 0;
               console.log('load and play');
-              videoElement.load();
+              // videoElement.load();
               videoElement.play();
               setNowPlaying(true);
             }
@@ -45,7 +45,8 @@ const MyVideo1 = forwardRef((props, ref1) => {
       });
       // 컴포넌트가 처음 마운트 될 때 동영상 시작 할지 말지 여부 (여기서는 시작되게 했음)
       setNowPlaying(true);
-      observedVideoElement.play();
+      // observedVideoElement.play();
+      observedVideoElement.load();
     }
   };
 
@@ -105,9 +106,10 @@ const MyVideo1 = forwardRef((props, ref1) => {
   };
   const handleLoadedmetadata = () => {
       console.log('handleMetadata');
-      console.log(videoElement.duration);
-      props.setDuration(videoElement.duration);
-      // console.log(props);
+      if(videoElement) {
+        console.log(videoElement.duration);
+        props.getVideoInfoHook(videoElement.duration, props.src, ref);
+      }
   }
 
   return (
@@ -124,20 +126,10 @@ const MyVideo1 = forwardRef((props, ref1) => {
         onEnded={handleEnded}
         onLoadedMetadata={handleLoadedmetadata}
         style={{width: "100%"}}
-        data-keepplaying
+        // data-keepplaying
       >
         <source src={videoSrc} type="video/mp4" />
       </video>
-      {/* <Controlbar
-        onProgressChange={onProgressChange}
-        onPlayIconClick={onPlayIconClick}
-        totalTime={totalTime}
-        currentTime={currentTime}
-        startTime={startTime}
-        showControl={showControl}
-        nowPlaying={nowPlaying}
-        videoElement={videoElement}
-      /> */}
     </div>
   );
 });

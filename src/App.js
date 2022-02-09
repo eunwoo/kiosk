@@ -3,8 +3,8 @@ import { useRoutes } from 'react-router-dom';
 import routes from './routes';
 import map, { mappx } from './kioskmap';
 
-console.log(map['Program']);
-console.log(mappx);
+// console.log(map['Program']);
+// console.log(mappx);
 mappx.forEach((x) => {
     map[x.page] = [];
     x.area.forEach((a) => {
@@ -54,7 +54,7 @@ mappx.forEach((x) => {
                     //     to = x.page + '/' + a.to[ref];
                     // }
                     to = a.to[ref];
-                    console.log(to);
+                    // console.log(to);
                     map[x.page].push({
                         x: String((xp / x.image_size.w) * 100) + '%',
                         y: String((yp / x.image_size.h) * 100) + '%',
@@ -76,7 +76,7 @@ mappx.forEach((x) => {
         }
     });
 });
-console.log(map);
+// console.log(map);
 
 function App() {
     return useRoutes(routes);
