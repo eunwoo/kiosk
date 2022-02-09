@@ -17,32 +17,18 @@ import 'swiper/css/effect-fade'
 const host = "http://localhost";
 const port = 3001;
 
+const homeImageDisplayTime = 10000; // 10초
+const homeImageTransitionTime = 3000; // 화면전환시간
+
 export default function Main() {
     const navigate = useNavigate();
-    const [autoplaySpeed, setAutoplaySpeed] = useState(1000);
     const [transitionSpeed, setTransitionSpeed] = useState(2500);
-    const [videoPaused, setVideoPaused] = useState(false);
     const videoRef = useRef(null);
     const [pages, setPages] = useState([]);
-    const [videoDuration, setVideoDuration] = useState(1000);
     const [duration, setDuration] = useState(1000);
     const swiperRef = useRef(null);
-    const swiper = useSwiper();
-    // const [dictVideo, setDictVideo] = useState({});
     const dictVideo = useRef({});
 
-    const addTimeUpdate = () => {
-        const observedVideoElement = videoRef && videoRef.current;
-        console.log(observedVideoElement);
-    }
-    const replayVideo = () => {
-        const observedVideoElement = videoRef && videoRef.current;
-        observedVideoElement.play();
-    }
-    const pauseVideo = () => {
-        const observedVideoElement = videoRef && videoRef.current;
-        observedVideoElement.pause();
-    }
     const handlerClick = () => {
         console.log('handlerClick');
         navigate('Program');
@@ -55,27 +41,20 @@ export default function Main() {
         setPages(response.data);
     }
     useEffect(() => {
-        addTimeUpdate();
         getPages();
-        setDuration(1000);
-    }, [videoRef, videoDuration])
+    }, [videoRef])
     const getVideoInfoHook = (_duration, filename, _ref) => {
-        console.log('setDurationHook');
+        console.log('getVideoInfoHook');
         console.log(_duration);
         console.log(filename);
         console.log(_ref);
-        // setDictVideo({...dictVideo, filename:{ref:_ref, duration:_duration}});
-        console.log(dictVideo.current);
         dictVideo.current[`${filename.split('/')[3].split('.')[0]}`]={ref:_ref, duration:_duration};
         console.log(dictVideo.current);
-        setVideoDuration(parseInt(_duration*1000));
-        if(swiperRef) {
-            swiperRef.current.swiper.autoplay.delay = videoDuration;
-        }
     }
     return (
-        <div>
-        <Swiper 
+        <div style={{WebkitBackfaceVisibility: "hidden"}}>
+        <Swiper
+            style={{WebkitBackfaceVisibility: "hidden"}} 
             speed={transitionSpeed}
             ref={swiperRef}
             effect="fade"
@@ -84,26 +63,29 @@ export default function Main() {
                 }
             }
             onBeforeTransitionStart={(swiper, speed, internal) => {
-                // console.log('onBeforeTransitionStart');
+                console.log('onBeforeTransitionStart');
                 if(swiper) {
                     if(pages[swiper.activeIndex].split('.')[1] === "mp4") {
                         let filename = pages[swiper.activeIndex].split('.')[0];
                         console.log('filename='+filename);
                         console.log(dictVideo);
                         console.log(dictVideo.current[`${filename}`]);
-                        let videoRef = dictVideo.current[`${filename}`];
-                        let duration = parseInt(videoRef.duration*1000);
-                        setDuration(duration);
+                        let videoRefCurrent = dictVideo.current[`${filename}`];
+                        let transitionTime = parseInt(videoRefCurrent.duration*1000) - homeImageTransitionTime;
+                        setDuration(transitionTime);
                         // replayVideo();
-                        videoRef.ref.current.play();
+                        videoRefCurrent.ref.current.play();
                     }
                     else {
-                        setDuration(10000);
-                        pauseVideo();
+                        setDuration(homeImageDisplayTime);
+                        videoRef.current.pause();
                     }
                     if(pages.length === swiper.activeIndex + 1) {
                         console.log('setTransition')
-                        setTransitionSpeed(100);
+                        setTransitionSpeed(0);
+                    }
+                    else {
+                        setTransitionSpeed(homeImageTransitionTime);
                     }
                 }                
             }}
@@ -129,7 +111,7 @@ export default function Main() {
                     else {
                         return (
                             <SwiperSlide key={index}>
-                                <img src={require(`../static/home/${page}`)} ></img>
+                                <img src={require(`../static/home/${page}`)} alt={page} ></img>
                             </SwiperSlide>
                         )
                     }

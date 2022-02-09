@@ -116,7 +116,7 @@ const MyVideo1 = forwardRef((props, ref1) => {
     <div>
       <video
         loop={false}
-        muted={false}
+        muted={true}
         ref={ref}
         playsInline={true}
         onClick={handleControlVisible}
@@ -125,7 +125,7 @@ const MyVideo1 = forwardRef((props, ref1) => {
         onPause={handlePause}
         onEnded={handleEnded}
         onLoadedMetadata={handleLoadedmetadata}
-        style={{width: "100%"}}
+        style={{width:"100%"}}
         // data-keepplaying
       >
         <source src={videoSrc} type="video/mp4" />
