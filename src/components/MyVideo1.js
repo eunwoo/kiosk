@@ -105,9 +105,9 @@ const MyVideo1 = forwardRef((props, ref1) => {
     videoElement.pause();
   };
   const handleLoadedmetadata = () => {
-      console.log('handleMetadata');
+      // console.log('handleMetadata');
       if(videoElement) {
-        console.log(videoElement.duration);
+        // console.log(videoElement.duration);
         props.getVideoInfoHook(videoElement.duration, props.src, ref);
       }
   }
@@ -116,7 +116,7 @@ const MyVideo1 = forwardRef((props, ref1) => {
     <div>
       <video
         loop={false}
-        muted={false}
+        muted={true}
         ref={ref}
         playsInline={true}
         onClick={handleControlVisible}

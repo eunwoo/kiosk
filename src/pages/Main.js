@@ -9,10 +9,12 @@ import { useState, useRef, useEffect } from 'react'
 import MyVideo1 from "../components/MyVideo1"
 import axios from 'axios';
 import { Swiper, SwiperSlide, useSwiper } from 'swiper/react';
-import { Autoplay, EffectCube, EffectFade } from 'swiper';
+import { Autoplay, EffectCube, EffectFade, Pagination } from 'swiper';
 import 'swiper/css';
 // import 'swiper/css/effect-cube'
 import 'swiper/css/effect-fade'
+import 'swiper/css/pagination'
+import '../styles.css'
 
 const host = "http://localhost";
 const port = 3001;
@@ -28,6 +30,8 @@ export default function Main() {
     const [duration, setDuration] = useState(1000);
     const swiperRef = useRef(null);
     const dictVideo = useRef({});
+    const [pagination1, setPagination1] = useState(false);
+    const [pagination2, setPagination2] = useState(true);
 
     const handlerClick = () => {
         console.log('handlerClick');
@@ -59,33 +63,40 @@ export default function Main() {
             speed={transitionSpeed}
             ref={swiperRef}
             effect="fade"
+            pagination={{
+                dynamicBullets: pagination1,
+                clickable: pagination2,
+            }}
             onSwiper={(swiper) => {
                     console.log(swiper);
                 }
             }
+            onSlideChange = {(swiper) => {
+                console.log('onSlideChange');
+                if(pages[swiper.activeIndex].split('.')[1] === "mp4") {
+                    let filename = pages[swiper.activeIndex].split('.')[0];
+                    console.log('filename='+filename);
+                    console.log(dictVideo);
+                    console.log(dictVideo.current[`${filename}`]);
+                    let videoRefCurrent = dictVideo.current[`${filename}`];
+                    let transitionTime = parseInt(videoRefCurrent.duration*1000) - homeImageTransitionTime;
+                    setDuration(transitionTime);
+                    videoRefCurrent.ref.current.play();
+                }
+                else {
+                    console.log('set duration for image='+homeImageDisplayTime);
+                    setDuration(homeImageDisplayTime);
+                    videoRef.current.pause();
+                }
+            }}
+            onSlideChangeTransitionStart={(swiper) => {
+                console.log('onSlideChangeTransitionEnd');
+
+            }}
             onBeforeTransitionStart={(swiper, speed, internal) => {
-                console.log('onBeforeTransitionStart');
+                // console.log('onBeforeTransitionStart');
                 if(swiper) {
-                    console.log(swiper.activeIndex);
-                    console.log(pages);
-                    if(pages[swiper.activeIndex].split('.')[1] === "mp4") {
-                        let filename = pages[swiper.activeIndex].split('.')[0];
-                        console.log('filename='+filename);
-                        console.log(dictVideo);
-                        console.log(dictVideo.current[`${filename}`]);
-                        let videoRefCurrent = dictVideo.current[`${filename}`];
-                        let transitionTime = parseInt(videoRefCurrent.duration*1000) - homeImageTransitionTime;
-                        setDuration(transitionTime);
-                        // replayVideo();
-                        videoRefCurrent.ref.current.play();
-                    }
-                    else {
-                        console.log('set duration for image='+homeImageDisplayTime);
-                        setDuration(homeImageDisplayTime);
-                        videoRef.current.pause();
-                    }
                     if(pages.length === swiper.activeIndex + 1) {
-                        console.log('setTransition')
                         setTransitionSpeed(0);
                     }
                     else {
@@ -93,14 +104,11 @@ export default function Main() {
                     }
                 }                
             }}
-            onSlideChange={(swiper) => {
-                // console.log('onSlideChange');
-            }}
             autoplay={{
                 delay: duration,
                 disableOnInteraction: false,
             }}
-            modules={[Autoplay, EffectFade]}
+            modules={[Autoplay, EffectFade, Pagination]}
         >
             {
                 pages.length && pages.map((page, index) => {
@@ -126,7 +134,7 @@ export default function Main() {
                 })
             }
         </Swiper>
-        <div style={{position:"absolute", left:"0", top:"0", width:"100%", height:"100%", zIndex:"100" }} onClick={handlerClick}></div>
+        <div style={{position:"absolute", left:"0", top:"0", width:"100%", height:"85%", zIndex:"100" }} onClick={handlerClick}></div>
         </div>
     );
 }
